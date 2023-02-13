@@ -22,6 +22,7 @@
     rgba(255, 255, 255, 0)
   );
 
+
   --tile-start-rgb: 239, 245, 249;
   --tile-end-rgb: 228, 232, 233;
   --tile-border: conic-gradient(
@@ -104,4 +105,52 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+body{
+  background: #222a35;
+  margin: 100px;
+}
+
+.btn{
+  background-color: #1ED760;
+  height: 40px;
+  width:20vh;
+  border-radius: 10px;
+  z-index: 100;
+  color: white;
+  font-size: medium;
+  font-weight: 600;
+
+}
+
+table{
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border-width: 1px;
+  border-color: black;
+  width: 100%;
+  color: black;
+  border: 1px solid;
+  border-radius: 10px;
+  margin-top: 20px;
+
+}
+
+th{
+  background-color: #1ED760;
+  height: 40px;
+  border: 1px solid;
+  border-color: black;
+  border-collapse: collapse;
+
+
+}
+
+td{
+  text-align: center;
+  border: 1px solid;
+  background-color: #d0f5dd;
+  height: 40px;
+
 }

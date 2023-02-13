@@ -269,3 +269,9 @@
     transform: rotate(0deg);
   }
 }
+
+.heading{
+  display:flex;
+  justify-content: space-between;
+  margin-top:00px;
+}
