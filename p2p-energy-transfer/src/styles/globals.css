@@ -154,3 +154,13 @@ td{
   height: 40px;
 
 }
+
+input{
+  height: 40px;
+  width:20vh;
+  border-radius: 5px;
+  color: Black;
+  font-size: medium;
+  font-weight: 600;
+}
+

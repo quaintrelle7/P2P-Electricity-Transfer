@@ -14,6 +14,7 @@ export default function Home() {
     <h2 style={{color:'white', marginTop:'70px'}}>Ongoing Bids</h2>
 
     <table className='table-1'>
+    <tbody>
       <tr>
         <th>Seller</th>
         <th>Units Available</th>
@@ -28,6 +29,7 @@ export default function Home() {
         <td>th</td>
         <td>bj</td>
       </tr>
+      </tbody>
     </table>
     </div>
   )
