@@ -34,12 +34,13 @@ cannot be changed.
 
 The contract logic takes place as follows:
 
-● Conditions such as price, amount, source, destination, etc should be read.
-● Payment should be checked
-● If the requirements have been verified then
-○ Grant access to an electric source,
-○ Record the electricity consumption.
-[23:34, 13/02/2023] Sharayu: ● If consumption is reached the threshold, revoke access.
+- Conditions such as price, amount, source, destination, etc should be read.
+-  Payment should be checked
+-  If the requirements have been verified then
+-  Grant access to an electric source,
+-  Record the electricity consumption.
+-  If consumption is reached the threshold, revoke access.
+
 To consume and/or sell power, nodes must join and contribute to the grid, according to our
 approach. For their excellent contributions to the network, nodes can be rewarded. Transaction
 fees may be added to the network to cover infrastructure costs or if nodes employ extra services
