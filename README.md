@@ -1,5 +1,8 @@
 # P2P-Electricity-Transfer
 
+Find the contract here: https://goerli.etherscan.io/address/0xc2d406f6ea337505a340c7c8e0e3b8422983b8ee
+
+
 
 1. The producer node will generate a token corresponding to the value of electricity
 produced.
@@ -45,3 +48,5 @@ To consume and/or sell power, nodes must join and contribute to the grid, accord
 approach. For their excellent contributions to the network, nodes can be rewarded. Transaction
 fees may be added to the network to cover infrastructure costs or if nodes employ extra services
 like public storage.
+
+
