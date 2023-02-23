@@ -8,10 +8,10 @@ export default function Home() {
   return (
     <div>
     <div className= {styles.heading}> 
-            <h1 style={{color:'white'}}>Welcome to P2P Electricity Transfer Network!</h1>
+            <h1 style={{color:'white', fontFamily:"Arial"}}>Welcome to P2P Electricity Transfer Network!</h1>
             <button className='btn'>Connect Wallet</button>
     </div>
-    <h2 style={{color:'white', marginTop:'70px'}}>Ongoing Bids</h2>
+    <h2 style={{color:'white', marginTop:'70px', fontFamily:"Arial"}}>Ongoing Bids</h2>
 
     <table className='table-1'>
     <tbody>

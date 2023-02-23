@@ -5,7 +5,7 @@ export default function MyPortal() {
   return (
     <div className='myportal'>
         <div>
-            <div className="myportal-left" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", backgroundColor:"springgreen"}}>
+            <div className="myportal-left" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", backgroundColor:"#0bcda4"}}>
                 <div>
                     <input placeholder='    Units in KW' style={{marginRight:"0px", width:"42vh"}}></input>
                 </div>

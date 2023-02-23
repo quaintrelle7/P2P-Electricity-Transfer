@@ -113,12 +113,12 @@ body{
 }
 
 .btn{
-  background-color: #1ED760;
+  background-color: #0bcda4;
   height: 40px;
   width:20vh;
   border-radius: 10px;
   z-index: 100;
-  color: white;
+  color: black;
   font-size: medium;
   font-weight: 600;
 
@@ -127,29 +127,26 @@ body{
 table{
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
-  border-width: 1px;
+  border: 1px solid;
   border-color: black;
   width: 100%;
   color: black;
-  border: 1px solid;
   border-radius: 10px;
   margin-top: 20px;
 
 }
 
 th{
-  background-color: #1ED760;
+  background-color: #0bcda4;
   height: 40px;
   border: 1px solid;
   border-color: black;
-  border-collapse: collapse;
 
 
 }
 
 td{
   text-align: center;
-  border: 1px solid;
   background-color: #d0f5dd;
   height: 40px;
 
