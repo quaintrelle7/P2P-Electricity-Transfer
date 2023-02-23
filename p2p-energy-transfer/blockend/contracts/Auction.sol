@@ -1,108 +1,90 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.8.0;
+pragma solidity >=0.8.2 <0.9.0;
 
-contract P2PElectricityTrading {
-    // Define the Prosumer struct
-    struct Prosumer {
-        uint256 units;
-        uint256 price;
-        uint256 minPrice;
-        uint256 lockingPeriod;
-        uint256 rating;
-        bool isProducer;
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+/**
+ * @title Storage
+ * @dev Store & retrieve value in a variable
+ * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
+ */
+
+ //Sign the message to become a seller/buyer
+
+contract P2P {
+
+    using SafeMath for uint256;
+    using Counters for Counters.Counter;
+
+    enum Status{
+        PENDING, 
+        ADDED,
+        EXPIRED,
+        REVOKED 
     }
 
-    // Define the Bid struct
-    struct Bid {
+    struct Prosumer{
+        uint256 listingId; //For different Listing
         uint256 units;
         uint256 price;
+        uint256 lockinPeriod;
+        uint256 timestamp;
+        address prosumer;
+        Status status;
+       //All users are consumers
+    }
+
+     struct Bid{
         address bidder;
+        uint256 biddingAmount;
+        uint256 biddingUnits;
+        uint256 listingId;
         bool isHighestBid;
     }
 
-    // Define the state variables
-    mapping(address => Prosumer) public prosumers;
-    Bid[] public bids;
-    address public owner;
-    uint256 public endTime;
-    uint256 public minPrice;
 
-    // Define the events
-    event NewProducer(address indexed prosumer, uint256 units, uint256 price, uint256 minPrice, uint256 lockingPeriod);
-    event NewConsumer(address indexed prosumer);
-    event NewBid(address indexed bidder, uint256 units, uint256 price);
-    event AuctionEnded(address indexed winner, uint256 units, uint256 price);
+    mapping (uint256 => Prosumer) listMap;
+    Counters.Counter public _listingIdCount;
 
-    constructor(uint256 _endTime, uint256 _minPrice) {
-        owner = msg.sender;
-        endTime = _endTime;
-        minPrice = _minPrice;
+
+    function listElectricity(uint256 _units, uint256 _price, uint256 _lockinPeriod) external {
+        
+        uint256 listingId = _listingIdCount.current();
+        _listingIdCount.increment();
+        uint256 _timestamp= block.timestamp;
+
+        listMap[listingId] = Prosumer(
+            
+            listingId,
+            _units,
+            _price,
+            _lockinPeriod,
+            _timestamp,
+            msg.sender,
+            Status.ADDED
+        );
+
     }
 
-    // Define the functions
-    function addProducer(uint256 _units, uint256 _price, uint256 _minPrice, uint256 _lockingPeriod, uint256 _rating) external {
-        require(_units > 0 && _price > 0 && _minPrice > 0 && _lockingPeriod > 0, "Invalid input parameters");
-        prosumers[msg.sender] = Prosumer(_units, _price, _minPrice, _lockingPeriod, _rating, true);
-        emit NewProducer(msg.sender, _units, _price, _minPrice, _lockingPeriod);
+    //
+
+   
+    function placeBid(uint256 _bidAmount, uint256 _listingId, uint256 _bidUnits) external payable{
+
+        require(listMap[_listingId].status == Status.ADDED, "Listing not available!");
+        // Lock the bidding amount
+        require(msg.value >= (_bidAmount*_bidUnits), "Insufficient Amount!");
+
+        require(block.timestamp <= listMap[_listingId].lockingPeriod + listMap[_listingId].timestamp, "Bid has been expired!");
+
+        
+
     }
 
-    function addConsumer(uint256 _rating) external {
-        prosumers[msg.sender] = Prosumer(0, 0, 0, 0, _rating, false);
-        emit NewConsumer(msg.sender);
-    }
 
-    function placeBid(uint256 _units, uint256 _price) external {
-    require(_units > 0 && _price > 0, "Invalid input parameters");
-    require(prosumers[msg.sender].rating > 0, "Consumer has no rating");
-    require(prosumers[msg.sender].minPrice < _price, "Bid price is lower than the minimum price");
-
-    uint256 highestBid = 0;
-    for (uint256 i = 0; i < bids.length; i++) {
-        if (bids[i].price > highestBid) {
-            highestBid = bids[i].price;
-        }
-    }
-
-    require(_price > highestBid, "Bid price must be higher than the current highest bid");
-
-    bids.push(Bid(_units, _price, msg.sender, true));
-    emit NewBid(msg.sender, _units, _price);
-    }
     
-    function endAuction() external {
-    require(block.timestamp >= endTime, "Auction has not ended yet");
 
-    uint256 highestBid = 0;
-    uint256 highestBidIndex;
-    address highestBidder;
 
-    for (uint256 i = 0; i < bids.length; i++) {
-        Bid memory bid = bids[i];
-        if (bid.price > highestBid && bid.units <= prosumers[msg.sender].units) {
-            highestBid = bid.price;
-            highestBidIndex = i;
-            highestBidder = bid.bidder;
-        }
-    }
-
-    if (highestBid > 0) {
-        prosumers[msg.sender].units -= bids[highestBidIndex].units;
-        prosumers[msg.sender].rating += 1;
-        bids[highestBidIndex].isHighestBid = true;
-        emit AuctionEnded(highestBidder, bids[highestBidIndex].units, bids[highestBidIndex].price);
-
-        for (uint256 i = 0; i < bids.length; i++) {
-            Bid memory bid = bids[i];
-            if (!bid.isHighestBid && bid.bidder == msg.sender) {
-                payable(bid.bidder).transfer(bid.units * bid.price);
-            }
-        }
-    } else {
-        prosumers[msg.sender].rating -= 1;
-    }
-
-    delete bids;
-    endTime = 0;
-    }
 }
