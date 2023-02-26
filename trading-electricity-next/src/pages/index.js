@@ -1,15 +1,22 @@
-import Image from 'next/image'
 import web3 from 'blockend/web3'
+import { useEffect, useState } from 'react';
 
 
 
 export default function Home() {
 
-  // web3.eth.getAccounts().then(console.log);
+  web3.eth.getAccounts().then(console.log);
 
-  // const accounts = web3.eth.requestAccounts();
+   const [account, setAccount] = useState('');
 
-   
+  useEffect(() => {
+  const getAccount = async () => {
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
+  };
+  getAccount();
+}, []);
+
 
   return (
 
@@ -20,7 +27,8 @@ export default function Home() {
             <button className='btn'>Connect Wallet</button>
            
     </div>
-    <h1>"Hi" </h1>
+    
+    <h3  style={{color:'white', marginTop:'70px'}}>Hello,  {account}! </h3>
     <h2 style={{color:'white', marginTop:'70px', fontFamily:"Arial"}}>Ongoing Bids</h2>
 
     <table className='table-1'>
