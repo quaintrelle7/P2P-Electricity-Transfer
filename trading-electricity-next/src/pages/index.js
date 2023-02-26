@@ -28,7 +28,7 @@ export default function Home() {
            
     </div>
     
-    <h3  style={{color:'white', marginTop:'70px'}}>Hello,  {account}! </h3>
+    <h3  style={{color:'white', marginTop:'70px'}}>Hello  {account}! </h3>
     <h2 style={{color:'white', marginTop:'70px', fontFamily:"Arial"}}>Ongoing Bids</h2>
 
     <table className='table-1'>

@@ -29,7 +29,8 @@ contract P2P {
         uint256 listingId; //For different Listing
         uint256 units;
         uint256 price;
-        uint256 lockinPeriod;
+        bytes32 source;
+        uint256 lockingPeriod;
         uint256 timestamp;
         address prosumer;
         Status status;
@@ -49,18 +50,19 @@ contract P2P {
     Counters.Counter public _listingIdCount;
 
 
-    function listElectricity(uint256 _units, uint256 _price, uint256 _lockinPeriod) external {
+    function listElectricity(uint256 _units, uint256 _price,  bytes32 _source, uint256 _lockingPeriod) external {
         
         uint256 listingId = _listingIdCount.current();
         _listingIdCount.increment();
         uint256 _timestamp= block.timestamp;
 
-        listMap[listingId] = Prosumer(
+     listMap[listingId] = Prosumer(
             
             listingId,
             _units,
             _price,
-            _lockinPeriod,
+            _source,
+            _lockingPeriod,
             _timestamp,
             msg.sender,
             Status.ADDED
