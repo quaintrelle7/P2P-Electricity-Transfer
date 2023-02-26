@@ -1,8 +1,5 @@
 import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
 import web3 from 'blockend/web3'
-const inter = Inter({ subsets: ['latin'] })
 
 
 
@@ -18,12 +15,12 @@ export default function Home() {
 
     
     <div>
- <div className= {styles.heading}> 
+ <div> 
             <h1 style={{color:'white', fontFamily:"Arial"}}>Welcome to P2P Electricity Transfer Network!</h1>
             <button className='btn'>Connect Wallet</button>
            
     </div>
-    <h1>"Hi" + {accounts[0]}</h1>
+    <h1>"Hi" </h1>
     <h2 style={{color:'white', marginTop:'70px', fontFamily:"Arial"}}>Ongoing Bids</h2>
 
     <table className='table-1'>
