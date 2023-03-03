@@ -61,10 +61,10 @@ export default function MyPortal() {
     <div>
     <h1 style={{color:'white', fontFamily:"Arial", marginBottom:"40px"}}>My Energy Portal!</h1>
 
-    <div className='myportal' style={{display:"flex", justifyContent:"space-around"}}>
+    <div className='myportal' style={{display:"flex", flexDirection:"row", flexWrap: "nowrap", justifyContent:"space-around"}}>
 
         <div>
-            <div className="myportal-left" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", backgroundColor:"#bdf6ea"}}>
+            <div className="myportal-left" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", height:"20vw", backgroundColor:"#bdf6ea"}}>
 
             <h3 style={{fontFamily:"Arial", marginBottom:"20px", marginLeft:"60px"}}>Input Energy Details</h3>
 
@@ -74,7 +74,8 @@ export default function MyPortal() {
                            value={state.units}
                            onChange={handleInputChange}
                            placeholder='    Units in KW' 
-                           style={{marginRight:"0px", width:"42vh", borderColor:"#0bcda4"}}></input>
+                           style={{marginRight:"0px", width:"42vh", borderColor:"#0bcda4"}}
+                           required="true"></input>
                 </div>
 
                 <div>
@@ -82,7 +83,8 @@ export default function MyPortal() {
                            value={state.price}
                            onChange={handleInputChange}
                            placeholder='    Price in Eth' 
-                           style={{marginTop:"20px", width:"42vh", borderColor:"#0bcda4"}}></input>
+                           style={{marginTop:"20px", width:"42vh", borderColor:"#0bcda4"}}
+                           required="true"></input>
                 </div>
                
                
@@ -91,7 +93,8 @@ export default function MyPortal() {
                            value={state.lockingPeriod}
                            onChange={handleInputChange}
                            placeholder='    Lock-In Period' 
-                           style={{marginTop:"10px",width:"42vh", borderColor:"#0bcda4"}}></input>
+                           style={{marginTop:"10px",width:"42vh", borderColor:"#0bcda4"}}
+                           required="true"></input>
                 
                 
                 <button className='btn' style={{marginTop:"30px", marginLeft:"10vh", backgroundColor:"#0bcda4", color:"black", borderColor:"white"}}>Submit</button>
@@ -101,7 +104,7 @@ export default function MyPortal() {
 
 
             <div>
-            <div className="myportal-right" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", backgroundColor:"#bdf6ea", height:"353.2px"}}>
+            <div className="myportal-right" style={{border: "1px solid white", padding: "40px", borderRadius:"10px", width: "55vh", backgroundColor:"#bdf6ea", height:"20vw"}}>
 
             <h3 style={{fontFamily:"Arial", marginBottom:"20px", marginLeft:"60px"}}>My Recent Purchase</h3>
                 <div>
