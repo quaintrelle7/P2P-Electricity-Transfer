@@ -9,10 +9,10 @@ if(typeof window!=="undefined" && typeof window.ethereum !== "undefined"){
 else{
 
     const provider = new Web3.providers.HttpProvider(  
-        'https://goerli.infura.io/v3/09b5a24c345742ea95c3cf2636900c17'
-    );
+   'https://polygon-mumbai.g.alchemy.com/v2/cNZhkVFPVIileSpGtOeahsFjCFU5sn_h');
 
     web3 = new Web3(provider);
 }
+
 
 export default web3;

@@ -1,7 +1,6 @@
 import web3 from 'blockend/web3'
 import { useEffect, useState } from 'react';
-
-
+import  AuctionContract  from 'blockend/interact';
 
 export default function Home() {
 
@@ -24,7 +23,7 @@ export default function Home() {
     <div>
  <div> 
             <h1 style={{color:'white', fontFamily:"Arial"}}>Welcome to P2P Electricity Transfer Network!</h1>
-            <button className='btn'>Connect Wallet</button>
+            {/* <button className='btn'>Connect Wallet</button> */}
            
     </div>
     
