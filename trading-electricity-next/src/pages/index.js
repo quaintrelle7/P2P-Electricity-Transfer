@@ -1,6 +1,6 @@
 import web3 from 'blockend/web3'
 import { useEffect, useState } from 'react';
-import  AuctionContract  from 'blockend/interact';
+import  {AuctionContract}  from 'blockend/interact';
 
 export default function Home() {
 
@@ -16,6 +16,51 @@ export default function Home() {
   getAccount();
 }, []);
 
+const[data, setData] = useState('');
+
+useEffect(()=>{
+  async function fetchData(){
+    const accounts = await web3.eth.requestAccounts();
+    const result = await AuctionContract.methods.getAllListings().call();
+    setData(result);
+  }
+  fetchData();
+
+}, [])
+
+
+const[listingAddress, setListingAddress] = useState('');
+
+  // useEffect(() => {
+  //   const getListingAddress = async () => {
+  //     if (AuctionContract) {
+  //       const listing = await AuctionContract.methods.getAllListings(listingId).call();
+  //       setListingAddress(listing.address);
+  //     }
+  //   };
+
+  //   getListingAddress();
+  // }, [AuctionContract]);
+
+   const handleSubmit = async( _listingId,  _units) =>{
+      
+        
+
+      
+
+            //get the account address to make the transaction
+            const accounts = await web3.eth.requestAccounts();
+
+            const tx = await AuctionContract.methods.placeBid
+            (_listingId, _units)
+            .send({ from: accounts[0] });
+
+
+            
+
+      
+        
+    };
 
   return (
 
@@ -33,21 +78,25 @@ export default function Home() {
     <table className='table-1'>
     <tbody>
       <tr>
-        <th>Listing Address</th>
+        <th>Seller Address</th>
         <th>Units Available</th>
         <th>Price</th>
-        <th>Source</th>
         <th>Buy</th>
       </tr>
-      <tr>
-        <td>xy</td>
-        <td>ab</td>
-        <td>cd</td>
-        <td>th</td>
-        <td><button style={{backgroundColor:"#9cecdb", width:"12vh", height:"30px", borderRadius:"5px" }}>buy</button></td>
+    
+      {data.map((item, index)=>(
+         <tr key={index}>
+        <td>{item.prosumer}</td>
+        <td>{item.units}</td>
+        <td>{item.price}</td>
+        <td><button onSubmit={handleSubmit(item.listingId, item.units)} style={{backgroundColor:"#9cecdb", width:"12vh", height:"30px", borderRadius:"5px", cursor:"pointer"}}>buy</button></td>
       </tr>
+      ))}
+    
+     
       </tbody>
     </table>
+
     </div>
   )
 }
