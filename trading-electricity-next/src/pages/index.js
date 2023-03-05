@@ -1,6 +1,7 @@
 import web3 from 'blockend/web3'
 import { useEffect, useState } from 'react';
 import  {AuctionContract}  from 'blockend/interact';
+import Link from 'next/link';
 
 export default function Home() {
 
@@ -72,7 +73,10 @@ const[listingAddress, setListingAddress] = useState('');
            
     </div>
     
+    <div style={{display:"flex", justifyContent:"space-between"}}>
     <h3  style={{color:'white', marginTop:'70px'}}>Hello  {account}! </h3>
+    <Link href="/MyPortal" style={{color:'white', marginTop:'70px', fontSize:"20px", fontWeight:"Bold"}}>Go to MyPortal </Link>
+    </div>
     <h2 style={{color:'white', marginTop:'70px', fontFamily:"Arial"}}>Ongoing Bids</h2>
 
     <table className='table-1'>
