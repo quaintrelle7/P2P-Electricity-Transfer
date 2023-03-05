@@ -84,7 +84,7 @@ const[listingAddress, setListingAddress] = useState('');
         <th>Buy</th>
       </tr>
     
-      {data.map((item, index)=>(
+      {data && data.map((item, index)=>(
          <tr key={index}>
         <td>{item.prosumer}</td>
         <td>{item.units}</td>
