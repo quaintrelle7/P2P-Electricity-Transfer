@@ -1,7 +1,6 @@
 # P2P-Electricity-Transfer
 
-Find the contract here: https://goerli.etherscan.io/address/0xc2d406f6ea337505a340c7c8e0e3b8422983b8ee
-
+Deployed on the Polygon Chain: Test on the Mumbai Mainnet
 
 
 1. The producer node will generate a token corresponding to the value of electricity
