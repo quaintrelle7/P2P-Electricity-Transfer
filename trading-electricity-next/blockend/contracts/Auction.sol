@@ -1,143 +1,89 @@
-// SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.8.2 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-/*
+contract P2PElectricityTrading {
 
-    @title P2P
-    @dev A smart contract for peer-to-peer electricity trading.
-    Allows prosumers to list available electricity with units, price and locking period,
-    and consumers to place bids on the listings. The highest bidder for a listing can finalize the bid
-    after the locking period is over, and the prosumer receives the payment and units are deducted
-    from the listing. Consumers can also withdraw their bids before the locking period is over.
-    Listing can be in pending, added, expired or revoked status.
-*/
-
-contract P2P {
-    using SafeMath for uint256;
     using Counters for Counters.Counter;
+    using SafeMath for uint256;
 
-    enum Status{
-        PENDING, 
-        ADDED,
-        EXPIRED,
-        REVOKED 
-    }
+    Counters.Counter private _listingIds;
 
-    struct Prosumer{
-        uint256 listingId; //For different Listing
-        uint256 units;
-        uint256 price;
-        uint256 lockingPeriod;
-        uint256 timestamp;
-        address prosumer;
-        Status status;
-        //All users are consumers
-    }
+    enum Status { ADDED, EXPIRED, SOLD }
 
-    struct Bid{
-        address bidder;
-        uint256 biddingAmount;
-        uint256 biddingUnits;
+    struct Producer {
         uint256 listingId;
-        bool isHighestBid;
+        uint256 units;
+        uint256 pricePerUnit;
+        uint256 listingPeriod;
+        uint256 timestamp;
+        address producer;
+        Status status;
     }
 
-    mapping (uint256 => Prosumer) listMap;
-    mapping (uint256 => Bid) public bidMap;
-
-    Counters.Counter public _listingIdCount;
-    Counters.Counter public _bidIdCount;
-
-
-    event BidPlaced(uint256 bidId, address indexed bidder, uint256 biddingAmount, uint256 biddingUnits, uint256 indexed listingId);
-    event ListingAdded(uint256 indexed listingId, uint256 units, uint256 price, uint256 lockingPeriod, address indexed prosumer);
-
-    function listElectricity(uint256 _units, uint256 _price, uint256 _lockingPeriod) external {
-        uint256 listingId = _listingIdCount.current();
-        _listingIdCount.increment();
-        uint256 _timestamp= block.timestamp;
-
-        listMap[listingId] = Prosumer(
-            listingId,
-            _units,
-            _price,
-            _lockingPeriod,
-            _timestamp,
-            msg.sender,
-            Status.ADDED
-        );
-
-    emit ListingAdded(listingId, _units, _price, _lockingPeriod, msg.sender);
-
+    struct Buyer {
+        uint256 unitsToBuy;
+        address consumer;
+        uint256 amount;
     }
 
-    function placeBid(uint256 _listingId, uint256 _bidUnits) external payable{
-        require(listMap[_listingId].status == Status.ADDED, "Listing not available!");
-        require(msg.value > 0, "Invalid Bid!");
-        require(block.timestamp <= listMap[_listingId].lockingPeriod.add(listMap[_listingId].timestamp), "Bid has been expired!");
-        require(msg.value >= (listMap[_listingId].price.mul(_bidUnits)), "Insufficient Amount!");
+    mapping(uint256 => Producer) public producers;
+    mapping(address => Buyer) public buyers;
 
-        uint256 bidId = _bidIdCount.current();
-        _bidIdCount.increment();
+    event ListingAdded(uint256 listingId, address producer);
+    event UnitsPurchased(uint256 listingId, address buyer, uint256 units);
 
-        if(bidMap[_listingId].biddingAmount < msg.value) {
-            bidMap[_listingId].isHighestBid = false;
+    function addListing(uint256 units, uint256 pricePerUnit, uint256 listingPeriod) public {
+        _listingIds.increment();
+        uint256 newListingId = _listingIds.current();
+        producers[newListingId] = Producer(newListingId, units, pricePerUnit, listingPeriod, block.timestamp, msg.sender, Status.ADDED);
+        emit ListingAdded(newListingId, msg.sender);
+    }
+
+    function buyUnits(uint256 listingId, uint256 unitsToBuy) public payable {
+        Producer storage producer = producers[listingId];
+        require(block.timestamp < producer.timestamp.add(producer.listingPeriod), "Listing has expired.");
+        // require(producer.units >= unitsToBuy, "Not enough units available.");
+        // require(producer.pricePerUnit.mul(unitsToBuy) == msg.value, "Incorrect value sent.");
+
+        producer.units = producer.units.sub(unitsToBuy);
+        if(producer.units == 0) {
+            producer.status = Status.SOLD;
         }
 
-        bidMap[bidId] = Bid(
-            msg.sender,
-            msg.value,
-            _bidUnits,
-            _listingId,
-            true
-        );
-
-        emit BidPlaced(bidId, msg.sender, msg.value, _bidUnits, _listingId);
-
+        buyers[msg.sender] = Buyer(unitsToBuy, msg.sender, msg.value);
+        payable(producer.producer).transfer(msg.value);
+        emit UnitsPurchased(listingId, msg.sender, unitsToBuy);
     }
 
-    function withdrawBid(uint256 _listingId) external {
-        require(bidMap[_listingId].bidder == msg.sender, "Not authorized to withdraw the bid!");
-        require(block.timestamp > listMap[_listingId].lockingPeriod.add(listMap[_listingId].timestamp), "Can't withdraw the bid before locking period!");
-
-        payable(msg.sender).transfer(bidMap[_listingId].biddingAmount);
-
-        delete bidMap[_listingId];
-    }
-
-    function finalizeBid(uint256 _listingId) external {
-        require(listMap[_listingId].status == Status.ADDED, "Listing not available!");
-        require(block.timestamp > listMap[_listingId].lockingPeriod.add(listMap[_listingId].timestamp), "Can't finalize bid before locking period!");
-        
-        Bid memory winningBid = bidMap[_listingId];
-        require(winningBid.isHighestBid, "No valid bid found for the listing!");
-
-        address payable prosumer = payable(listMap[_listingId].prosumer);
-        uint256 totalAmount = winningBid.biddingAmount;
-        uint256 unitsSold = winningBid.biddingUnits;
-
-        payable(prosumer).transfer(totalAmount);
-
-        listMap[_listingId].units = listMap[_listingId].units.sub(unitsSold);
-
-        if(listMap[_listingId].units == 0) {
-            listMap[_listingId].status = Status.EXPIRED;
+    function checkListing(uint256 listingId) public {
+        Producer storage producer = producers[listingId];
+        if(block.timestamp > producer.timestamp.add(producer.listingPeriod) && producer.status == Status.ADDED) {
+            producer.status = Status.EXPIRED;
         }
-
-        delete bidMap[_listingId];
     }
 
-    function getListing(uint256, uint256, uint256, uint256, address)public view returns()
-    {
-        return(
-
-            listingI
-                // listingId, _units, _price, _lockingPeriod, msg.sender
-        );
+    function getAllListingIds() public view returns (uint256[] memory) {
+    uint256[] memory listingIds = new uint256[](_listingIds.current());
+    for (uint256 i = 0; i < _listingIds.current(); i++) {
+        listingIds[i] = i+1;
     }
+    return listingIds;
+}
 
+    function getListingDetails(uint256 listingId) public view returns (uint256, uint256, uint256, uint256, uint256, address, Status) {
+    Producer storage producer = producers[listingId];
+    return (
+        producer.listingId,
+        producer.units,
+        producer.pricePerUnit,
+        producer.listingPeriod,
+        producer.timestamp,
+        producer.producer,
+        producer.status
+    );
+    }
 }
