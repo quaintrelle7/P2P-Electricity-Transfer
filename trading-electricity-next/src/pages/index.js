@@ -120,16 +120,7 @@ export default function Home() {
           href="https://github.com/quaintrelle7/P2P-Electricity-Transfer"
         >
           <AiFillGithub color="white" fontSize={"25px"} />
-          <text
-            style={{
-              color: "white",
-              marginLeft: "90px",
-              marginTop: "3px",
-              position: "absolute",
-            }}
-          >
-            Github Repo
-          </text>
+          
         </Link>
 
         <Link href="https://twitter.com/ARPITKU80579385" target="_blank">
