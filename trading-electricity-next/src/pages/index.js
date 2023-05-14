@@ -2,9 +2,8 @@ import web3 from "blockend/web3";
 import { useEffect, useState } from "react";
 import { AuctionContract } from "blockend/interact";
 import Link from "next/link";
-import MyFooter from "./MyFooter";
-import Prosumer from "./Prosumer";
-import { AiFillGithub, AiFillTwitterCircle } from "react-icons/ai";
+
+// import { AiFillGithub, AiFillTwitterCircle } from "react-icons/ai";
 
 export default function Home() {
   web3.eth.getAccounts().then(console.log);
@@ -120,15 +119,25 @@ export default function Home() {
           target="_blank"
           href="https://github.com/quaintrelle7/P2P-Electricity-Transfer"
         >
-          <AiFillGithub color="white" fontSize={"25px"} />
+          {/* <AiFillGithub color="white" fontSize={"25px"} /> */}
+          <text
+            style={{
+              color: "white",
+              marginLeft: "90px",
+              marginTop: "3px",
+              position: "absolute",
+            }}
+          >
+            Github Repo
+          </text>
         </Link>
 
         <Link href="https://twitter.com/ARPITKU80579385" target="_blank">
-          <AiFillTwitterCircle
+          {/* <AiFillTwitterCircle
             color="white"
             fontSize={"25px"}
             style={{ marginLeft: "20px" }}
-          />
+          /> */}
           <text
             style={{
               color: "white",
